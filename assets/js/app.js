@@ -30,11 +30,13 @@ $("#list-btn").click(function() {
   return false;
 });
 
+/*
 $("#list-btn2").click(function() {
     $('#sidebar2').toggle();
     map.invalidateSize();
     return false;
 });
+*/
 
 $("#nav-btn").click(function() {
   $(".navbar-collapse").collapse("toggle");
@@ -52,6 +54,7 @@ $("#sidebar-hide-btn").click(function() {
   map.invalidateSize();
 });
 
+/*
 $("#sidebar-toggle-btn2").click(function() {
     $("#sidebar2").toggle();
     map.invalidateSize();
@@ -67,7 +70,7 @@ $("#filterButton").click(function(){
     $("#sidebar2").show();
     map.invalidateSize();
 });
-
+*/
 function sidebarClick(id) {
   map.addLayer(customerLayer).addLayer(newCustomerLayer).addLayer(quotesLayer).addLayer(serviceFailureLayer);
   var layer = markerClusters.getLayer(id);
