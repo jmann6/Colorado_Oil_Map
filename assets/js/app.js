@@ -167,7 +167,7 @@ var salesTerritory = L.geoJson(null, {
   }
 });
 
-$.getJSON("data/TerritoriesGeom.json", function (data) {
+$.getJSON("data/permits.json", function (data) {
     salesTerritory.addData(data);
 });
 
@@ -306,20 +306,6 @@ $.getJSON("data/permits.json", function (data) {
 
 var expenseQuoted = L.geoJson(null, {
     style: function (feature) {
-        if (feature.properties.ExpenseQuoted > 3000) {
-            return {
-                color: "#339933",
-                weight: 3,
-                opacity:1
-            };
-        }
-        else {
-            return {
-                color: "#000099",
-                weight: 2,
-                opacity:.5
-            };
-        }
     },
     onEachFeature: function (feature, layer) {
         if (feature.properties.ExpenseQuoted > 3000) {
@@ -433,12 +419,12 @@ var customer = L.geoJson(null, {
     }
   }
 });
-/*
+
 $.getJSON("data/CustomersGeo.json", function (data) {
     customer.addData(data);
   map.addLayer(customerLayer);
 });
-*/
+
 
 /* Empty layer placeholder to add to layer control for listening when to add/remove New Customers to markerClusters layer */
 var newCustomerLayer = L.geoJson(null);
@@ -548,11 +534,11 @@ var serviceFailure = L.geoJson(null, {
         }
     }
 });
-/*
-$.getJSON("data/GeoObjViewCustomersServiceFailures.json", function (data) {
+
+$.getJSON("data/permits.json", function (data) {
     serviceFailure.addData(data);
 });
-*/
+
 
 /* QUOTES LAYER  */
 var quotesLayer = L.geoJson(null);
@@ -794,9 +780,8 @@ groupedOverlays = {
      //   "<i class='fa fa-warning'></i>&nbsp;Service Failures": serviceFailureLayer
     },
     "Reference": {
-     //   "Sales Territories": salesTerritory,
-     //   "All Citadel Routes": citadelRoutes,
-        "Colorado Oil Permits": expenseQuoted,
+   //     "Sales Territories": salesTerritory,
+        "Colorado Oil Permits": quotes,
         "Precipitation": precipitation
      //   "Temperature": temperature
     }
