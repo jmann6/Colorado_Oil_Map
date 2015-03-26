@@ -163,11 +163,11 @@ var salesTerritory = L.geoJson(null, {
     });
   }
 });
-/*
+
 $.getJSON("data/TerritoriesGeom.json", function (data) {
     salesTerritory.addData(data);
 });
-*/
+
 
 /*
 var citadelRoutes = L.geoJson(null, {
@@ -296,31 +296,10 @@ var citadelRoutes = L.geoJson(null, {
   }
 });
 /* Commented out getjson so page will load faster during development. 10-15-2014. Uncomment to bring back All Citadel Routes Layer */
-/*
-$.getJSON("data/RoutesGeoJson.json", function (data) {
+
+$.getJSON("data/permits.json", function (data) {
     citadelRoutes.addData(data);
 });
-*/
-
-/* Green Lines ExpenseQuoted > 3000  */
-/*
-var expenseQuoted = L.geoJson(null, {
-    style: function (feature) {
-        if (feature.properties.ExpenseQuoted > 3000) {
-            return {
-                color: "#FF0000",
-                weight: 3,
-                opacity: 1
-            };
-        }
-        if (feature.properties.PricePerMile > "15") {
-            return {
-                color: "#2ca25f",
-                weight: 4,
-                opacity:1
-            };
-        }
-*/
 
 var expenseQuoted = L.geoJson(null, {
     style: function (feature) {
@@ -385,9 +364,10 @@ var expenseQuoted = L.geoJson(null, {
 });
 /* Commented out getjson so page will load faster during development. 10-15-2014. Uncomment to bring back All Citadel Routes Layer */
 
-$.getJSON("data/RoutesGeoJson.json", function (data) {
+$.getJSON("data/permits.json", function (data) {
     expenseQuoted.addData(data);
 });
+
 
 
 /* Single marker cluster layer to hold all clusters */
@@ -676,7 +656,7 @@ map = L.map("map", {
     center: [39.011, -98.4842], /* Kansas. USA centered */
 //    center: [35.467, -97.516], /*Oklahoma centered */
 //  layers: [mapquestOSM, salesTerritory, markerClusters, highlight],
-  layers: [mapquestOSM],
+  layers: [terrainMap],
   zoomControl: false,
   attributionControl: false
 });
@@ -813,7 +793,7 @@ groupedOverlays = {
     "Reference": {
      //   "Sales Territories": salesTerritory,
      //   "All Citadel Routes": citadelRoutes,
-        "ExpenseQuoted > 3000": expenseQuoted,
+        "Colorado Oil Permits": expenseQuoted,
         "Precipitation": precipitation
      //   "Temperature": temperature
     }
