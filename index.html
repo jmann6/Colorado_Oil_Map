@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Citadel Geospatial V2</title>
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.css">  -->  <!-- Replaced with mapbox.js -->
+    <link rel="stylesheet" href='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.css'>
+    <link rel="stylesheet" href="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.css">
+    <link rel="stylesheet" href="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.css">
+    <link rel="stylesheet" href="assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.css">
+    <link rel="stylesheet" href="assets/css/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+
+    <link rel="apple-touch-icon" sizes="76x76" href="assets/img/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="assets/img/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/img/favicon-152.png">
+    <link rel="icon" sizes="196x196" href="assets/img/favicon-196.png">
+    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="navbar-header">
+        <div class="navbar-icon-container">
+          <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-bars fa-lg white"></i></a>
+          <a href="#" class="navbar-icon pull-right visible-xs" id="sidebar-toggle-btn"><i class="fa fa-search fa-lg white"></i></a>
+        </div>
+        <a class="navbar-brand" href="#">Citadel Geospatial V2</a>
+      </div>
+      <div class="navbar-collapse collapse">
+       <form class="navbar-form navbar-right" role="search">
+          <div class="form-group has-feedback navbar-right">
+              <input id="searchbox" type="text" placeholder="Search" class="form-control">
+              <span id="searchicon" class="fa fa-search form-control-feedback"></span>
+          </div>
+       </form>
+     
+        <ul class="nav navbar-nav">
+          <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-info-circle white"></i>&nbsp;&nbsp;About</a></li>
+          <li class="dropdown">
+            <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down white"></i>&nbsp;&nbsp;Tools <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;Zoom To Full Extent</a></li>
+              <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="legend-btn"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;Show Legend</a></li>
+              <li class="divider hidden-xs"></li>
+              <!--
+              <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="login-btn"><i class="fa fa-user"></i>&nbsp;&nbsp;Login</a></li>
+              -->
+            </ul>
+          </li>
+          <!--
+          <li class="dropdown">
+              <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i class="fa fa-database white"></i>&nbsp;&nbsp;JSON Download <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="data/CustomersGeo.json" download="CustomersGeo.json" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;CAP Customers</a></li>
+                <li><a href="data/ObjCustomerNewBusiness.json" download="ObjCustomerNewBusiness.json" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;New Customers</a></li>
+                <li><a href="data/TerritoriesGeom.json" download="TerritoriesGeom.json" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Sales Territories</a></li>
+                <li><a href="data/vcgAirRoutes.json" download="vcgAirRoutes.json" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Air Routes</a></li>
+                <li><a href="data/RoutesGeoJson.json" download="RoutesGeoJson.json" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Citadel Routes</a></li>
+                <li><a href="data/GeoObjViewCustomersQuotesPending.json" download="GeoObjViewCustomersQuotesPending.json" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Quotes Pending</a></li>
+                <li><a href="data/GeoObjViewCustomersServiceFailures.json" download="GeoObjViewCustomersServiceFailures.json" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;Service Failures</a></li>
+                <li><a href="data/GeoCustomerMarkerDescriptionBRRO.json" download="GeoCustomerMarkerDescriptionBRRO.json" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-download"></i>&nbsp;&nbsp;BRRO pins</a></li>
+              </ul>
+          </li>
+          -->
+          <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;Filters</a></li>
+          <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn2"><i class="fa fa-list white"></i>&nbsp;&nbsp;Tracking Number Details</a></li>
+        </ul>
+      </div><!--/.navbar-collapse -->
+    </div>
+
+    <!-- ============================== Start of Top Bar 2========================================================== -->
+    <div id="container2">
+    <div id="sidebar2">
+        <div class="sidebar-wrapper2">
+            <div class="panel panel-default" id="features">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><strong>Tracking Number Details</strong>
+                        <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn2"><i class="fa fa-chevron-up"></i></button></h3>
+                </div>
+                <div class="panel-body">
+                    <p>
+                        <!--<div class="row">  -->
+                        <!-- Adding table -->
+                    <table class="table table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Tracking Number</th>
+                            <th>VendorName</th>
+                            <th>RouteOriginCityState</th>
+                            <th>RouteDestCityState</th>
+                            <th>Shipper</th>
+                            <th>Consignee</th>
+                            <th>RevenueQuoted</th>
+                            <th>ExpenseQuoted</th>
+                            <th>FNPQuoted</th>
+                            <th>AvgMiles</th>
+                            <th>RouteCount</th>
+                            <th>Price/Mile</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>1310A3931</td>
+                            <td>Mile High Delivery</td>
+                            <td>Denver CO</td>
+                            <td>Grand Junction CO</td>
+                            <td>Southwest Airlines</td>
+                            <td>EM Tech Inc</td>
+                            <td>$975.00</td>
+                            <td>$650.00</td>
+                            <td>$325.00</td>
+                            <td>343</td>
+                            <td>102</td>
+                            <td>$2.21</td>
+                        </tr>
+                        <tr>
+                            <td>1310A3937</td>
+                            <td>Time Courier</td>
+                            <td>Aurora CO</td>
+                            <td>Climax CO</td>
+                            <td>Wagner Equipment</td>
+                            <td>Freeport McMoran</td>
+                            <td>$192.00</td>
+                            <td>$171.60</td>
+                            <td>$23.00</td>
+                            <td>124</td>
+                            <td>10</td>
+                            <td>$3.54</td>
+                        </tr>
+                        <tr>
+                            <td>1310A4236</td>
+                            <td>Mile High Delivery</td>
+                            <td>Aurora CO</td>
+                            <td>Grand Junction CO</td>
+                            <td>Allied Group</td>
+                            <td>Nov Wilson</td>
+                            <td>$345.00</td>
+                            <td>$897.00</td>
+                            <td>$1.23</td>
+                            <td>673</td>
+                            <td>12</td>
+                            <td>$2.65</td>
+                        </tr>
+                        <tr>
+                            <td>1310A3931</td>
+                            <td>Mile High Delivery</td>
+                            <td>Denver CO</td>
+                            <td>Salt Lake City UT</td>
+                            <td>Southwest Airlines</td>
+                            <td>EM Tech Inc</td>
+                            <td>$975.00</td>
+                            <td>$650.00</td>
+                            <td>$325.00</td>
+                            <td>2133</td>
+                            <td>3</td>
+                            <td>$6.76</td>
+                        </tr>
+                        <tr>
+                            <td>1403A1283</td>
+                            <td>Time Courier</td>
+                            <td>Denver CO</td>
+                            <td>Colorado Springs CO</td>
+                            <td>Century Link</td>
+                            <td>Century Link</td>
+                            <td>$240.60</td>
+                            <td>$140.60</td>
+                            <td>$100.00</td>
+                            <td>562</td>
+                            <td>5</td>
+                            <td>$1.45</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!--  =========================== End of Top Bar (2) ===================================  -->
+
+    <!-- ============================== Left Sidebar (1) ===================================== -->
+      <div id="sidebar">
+        <div class="sidebar-wrapper">
+          <div class="panel panel-default" id="features">
+            <div class="panel-heading">
+              <h3 class="panel-title"><strong>Apply Filters</strong>
+              <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
+            </div>
+                <!-- Accordion code -->
+                <div class="panel-group" id="accordion">
+                      <div class="panel panel-default">
+                          <div class="panel-heading" data-parent="#accordion" data-toggle="collapse" data-target="#collapseOne">
+                              <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                      Filters
+                                  </a>
+                              </h4>
+                          </div>
+                          <div id="collapseOne" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                  <br>
+                                  <div class='input-group date' id='datetimepicker1'>
+                                      <span class="input-group-addon">Start Date</span>
+                                      <input type='text' class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                  </div>
+                                  <br>
+                                  <div class='input-group date' id='datetimepicker2'>
+                                      <span class="input-group-addon">End Date</span>
+                                      <input type='text' class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                  </div>
+                                  <br>
+                                  <div class="input-group">
+                                      <span class="input-group-addon">Route Min</span>
+                                      <input type="text" class="form-control">
+                                      <span class="input-group-addon">Miles</span>
+                                  </div>
+                                  <br>
+                                  <div class="input-group">
+                                      <span class="input-group-addon">Route Max</span>
+                                      <input type="text" class="form-control">
+                                      <span class="input-group-addon">Miles</span>
+                                  </div>
+                                  <br>
+                                  <div class="input-group">
+                                      <span class="input-group-addon">Route Min</span>
+                                      <input type="text" class="form-control">
+                                      <span class="input-group-addon">Weight</span>
+                                  </div>
+                                  <br>
+                                  <div class="input-group">
+                                      <span class="input-group-addon">Route Max</span>
+                                      <input type="text" class="form-control">
+                                      <span class="input-group-addon">Weight</span>
+                                  </div>
+                                  <br><br>
+                                  <div class="input-group">
+                                      <span class="input-group-addon">Station Origin Radius</span>
+                                      <input type="text" class="form-control">
+                                      <span class="input-group-addon">Miles</span>
+                                  </div>
+                                  <div class="cityTable">
+                                      <ul>
+                                              <li><input type="checkbox">Denver</li>
+                                              <li><input type="checkbox">Houston</li>
+                                              <li><input type="checkbox">Salt Lake</li>
+                                      </ul>
+                                  </div>
+                                  <button type="button" id="filterButton" class="btn btn-default navbar-btn">Apply Filters</button>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel panel-default">
+                          <div class="panel-heading" data-parent="#accordion" data-toggle="collapse" data-target="#collapseTwo">
+                              <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                      Vendors
+                                  </a>
+                              </h4>
+                          </div>
+                          <div id="collapseTwo" class="panel-collapse collapse">
+                              <div class="panel-body">
+
+                                  <table class="table table-condensed">
+                                      <thead>
+                                      <h5> <strong> Active PM 251214</strong></h5>
+                                      <tr>
+                                          <th>Avg Miles</th>
+                                          <th>Route Count</th>
+                                          <th>Price/Mile</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr>
+                                          <td>343</td>
+                                          <td>102</td>
+                                          <td>$2.21</td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                                  <br>
+                                  <table class="table table-condensed">
+                                      <thead>
+                                      <h5> <strong>Colorado Air Cargo 217070</strong></h5>
+                                      <tr>
+                                          <th>Avg Miles</th>
+                                          <th>Route Count</th>
+                                          <th>Price/Mile</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr>
+                                          <td>343</td>
+                                          <td>102</td>
+                                          <td>$2.21</td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                                  <br>
+                                  <table class="table table-condensed">
+                                      <thead>
+                                      <h5> <strong>Landstar Ranger Inc 218822</strong></h5>
+                                      <tr>
+                                          <th>Avg Miles</th>
+                                          <th>Route Count</th>
+                                          <th>Price/Mile</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr>
+                                          <td>343</td>
+                                          <td>102</td>
+                                          <td>$2.21</td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                                  <br>
+                                  <table class="table table-condensed">
+                                      <thead>
+                                      <h5> <strong> Time Courier 231260</strong></h5>
+                                      <tr>
+                                          <th>Avg Miles</th>
+                                          <th>Route Count</th>
+                                          <th>Price/Mile</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr>
+                                          <td>343</td>
+                                          <td>102</td>
+                                          <td>$2.21</td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                                  <br>
+                                  <table class="table table-condensed">
+                                      <thead>
+                                      <h5> <strong> Landstar Express America 220500</strong></h5>
+                                      <tr>
+                                          <th>Avg Miles</th>
+                                          <th>Route Count</th>
+                                          <th>Price/Mile</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr>
+                                          <td>343</td>
+                                          <td>102</td>
+                                          <td>$2.21</td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                                  <br>
+                                  <table class="table table-condensed">
+                                      <thead>
+                                      <h5> <strong> Colorado Air Cargo 217070</strong></h5>
+                                      <tr>
+                                          <th>Avg Miles</th>
+                                          <th>Route Count</th>
+                                          <th>Price/Mile</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr>
+                                          <td>343</td>
+                                          <td>102</td>
+                                          <td>$2.21</td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+                                  <br>
+                              </div>
+
+                      </div>
+                      </div>
+                      <div class="panel panel-default">
+                          <div class="panel-heading" data-parent="#accordion" data-toggle="collapse" data-target="#collapseThree">
+                              <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                      Lanes for Filters
+                                  </a>
+                              </h4>
+                          </div>
+                          <div id="collapseThree" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                  <table class="table table-condensed">
+                                      <thead>
+                                      <tr>
+                                          <th>Miles</th>
+                                          <th>Weight</th>
+                                          <th>Price/Mile</th>
+                                          <th>SellRate</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      <tr>
+                                          <td>809</td>
+                                          <td>$2276</td>
+                                          <td>$1.85</td>
+                                          <td>$4.26</td>
+                                      </tr>
+                                      <tr>
+                                          <td>653</td>
+                                          <td>$2314</td>
+                                          <td>$1.72</td>
+                                          <td>$2.35</td>
+                                      </tr>
+                                      <tr>
+                                          <td>235</td>
+                                          <td>$391</td>
+                                          <td>$1.02</td>
+                                          <td>$.95</td>
+                                      </tr>
+                                      <tr>
+                                          <td>52</td>
+                                          <td>$867</td>
+                                          <td>$1.94</td>
+                                          <td>$1.44</td>
+                                      </tr>
+                                      <tr>
+                                          <td>745</td>
+                                          <td>$545</td>
+                                          <td>$.56</td>
+                                          <td>$1.76</td>
+                                      </tr>
+                                      <tr>
+                                          <td>85</td>
+                                          <td>$10</td>
+                                          <td>$1.08</td>
+                                          <td>$1.56</td>
+                                      </tr>
+                                      <tr>
+                                          <td>541</td>
+                                          <td>$251</td>
+                                          <td>$3.04</td>
+                                          <td>$1.06</td>
+                                      </tr>
+                                      <tr>
+                                          <td>74</td>
+                                          <td>$52</td>
+                                          <td>$1.89</td>
+                                          <td>$2.34</td>
+                                      </tr>
+                                      <tr>
+                                          <td>120</td>
+                                          <td>$85</td>
+                                          <td>$3.03</td>
+                                          <td>$1.34</td>
+                                      </tr>
+                                      <tr>
+                                          <td>235</td>
+                                          <td>$867</td>
+                                          <td>$1.02</td>
+                                          <td>$.95</td>
+                                      </tr>
+                                      <tr>
+                                          <td>441</td>
+                                          <td>$349</td>
+                                          <td>$1.56</td>
+                                          <td>$2.37</td>
+                                      </tr>
+                                      <tr>
+                                          <td>655</td>
+                                          <td>$540</td>
+                                          <td>$4.05</td>
+                                          <td>$8.56</td>
+                                      </tr>
+                                      <tr>
+                                          <td>954</td>
+                                          <td>$691</td>
+                                          <td>$2.31</td>
+                                          <td>$4.56</td>
+                                      </tr>
+                                      <tr>
+                                          <td>375</td>
+                                          <td>$347</td>
+                                          <td>$.23</td>
+                                          <td>$1.99</td>
+                                      </tr>
+                                      <tr>
+                                          <td>150</td>
+                                          <td>$342</td>
+                                          <td>$4.52</td>
+                                          <td>$.23</td>
+                                      </tr>
+                                      <tr>
+                                          <td>548</td>
+                                          <td>$120</td>
+                                          <td>$9.54</td>
+                                          <td>$2.54</td>
+                                      </tr>
+                                      <tr>
+                                          <td>1250</td>
+                                          <td>$1201</td>
+                                          <td>$5.67</td>
+                                          <td>$1.34</td>
+                                      </tr>
+                                      <tr>
+                                          <td>548</td>
+                                          <td>$120</td>
+                                          <td>$9.54</td>
+                                          <td>$2.54</td>
+                                      </tr>
+                                      <tr>
+                                          <td>548</td>
+                                          <td>$120</td>
+                                          <td>$9.54</td>
+                                          <td>$2.54</td>
+                                      </tr>
+                                      <tr>
+                                          <td>548</td>
+                                          <td>$120</td>
+                                          <td>$9.54</td>
+                                          <td>$2.54</td>
+                                      </tr>
+                                      <tr>
+                                          <td>548</td>
+                                          <td>$120</td>
+                                          <td>$9.54</td>
+                                          <td>$2.54</td>
+                                      </tr>
+                                      <tr>
+                                          <td>548</td>
+                                          <td>$120</td>
+                                          <td>$9.54</td>
+                                          <td>$2.54</td>
+                                      </tr>
+                                      <tr>
+                                          <td>548</td>
+                                          <td>$120</td>
+                                          <td>$9.54</td>
+                                          <td>$2.54</td>
+                                      </tr>
+                                      <tr>
+                                          <td>548</td>
+                                          <td>$120</td>
+                                          <td>$9.54</td>
+                                          <td>$2.54</td>
+                                      </tr>
+                                      </tbody>
+                                  </table>
+
+                              </div>
+                          </div>
+                      </div>
+
+                    </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    <!--   ===================== This map id turns map on for List Search  ====================== -->
+   <div id="map"></div>
+
+
+    <!--  <div id="map"></div> -->
+    <!-- This map id turns on map for Second List if first map is commented out. -->
+
+    <div id="loading">
+      <div class="loading-indicator">
+        <div class="progress progress-striped active">
+          <div class="progress-bar progress-bar-info progress-bar-full"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Welcome to the BootLeaf template!</h4>
+          </div>
+          <div class="modal-body">
+            <ul class="nav nav-tabs" id="aboutTabs">
+              <li class="active"><a href="#about" data-toggle="tab"><i class="fa fa-question-circle"></i>&nbsp;About the project</a></li>
+              <li><a href="#contact" data-toggle="tab"><i class="fa fa-envelope"></i>&nbsp;Contact us</a></li>
+              <li><a href="#disclaimer" data-toggle="tab"><i class="fa fa-exclamation-circle"></i>&nbsp;Disclaimer</a></li>
+              <li><a href="#calendarTest" data-toggle="tab"><i class="fa fa-calendar"></i>&nbsp;Bootstrap-datetimepicker</a></li>
+           <!--   <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe"></i>&nbsp;More Data!<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+
+                  <li><a href="#data-toggle1" data-toggle="tab">Torque Map of CAP customers</a></li>
+                  <li><a href="#data-toggle2" data-toggle="tab">Real-time Earthquake Data</a></li>
+                  <li><a href="#data-toggle3" data-toggle="tab">Oil Shale Map</a></li>
+                  <li><a href="#data-toggle4" data-toggle="tab">Packing Basics: Air Freight</a></li>
+                  <li><a href="#data-toggle5" data-toggle="tab">What Are Incoterms?</a></li>
+
+                </ul>
+              </li>  -->
+            </ul>
+            <div class="tab-content" id="aboutTabsContent">
+              <div class="tab-pane fade active in" id="about">
+                <p>A simple, responsive template for building web mapping applications with <a href="http://getbootstrap.com/">Bootstrap 3</a>, <a href="http://leafletjs.com/" target="_blank">Leaflet</a>, and <a href="http://twitter.github.io/typeahead.js/" target="_blank">typeahead.js</a>. Open source, MIT licensed, and available on <a href="https://github.com/bmcbride/bootleaf" target="_blank">GitHub</a>.</p>
+                <div class="panel panel-primary">
+                  <div class="panel-heading">Features</div>
+                  <ul class="list-group">
+                    <li class="list-group-item">Fullscreen mobile-friendly map template with responsive navbar and modal placeholders</li>
+                    <li class="list-group-item">jQuery loading of external GeoJSON files</li>
+                    <li class="list-group-item">Logical multiple layer marker clustering via the <a href="https://github.com/Leaflet/Leaflet.markercluster" target="_blank">leaflet marker cluster plugin</a></li>
+                    <li class="list-group-item">Elegant client-side multi-layer feature search with autocomplete using <a href="http://twitter.github.io/typeahead.js/" target="_blank">typeahead.js</a></li>
+                    <li class="list-group-item">Responsive sidebar feature list with sorting and filtering via <a href="http://listjs.com/" target="_blank">list.js</a></li>
+                    <li class="list-group-item">Marker icons included in grouped layer control via the <a href="https://github.com/ismyrnow/Leaflet.groupedlayercontrol" target="_blank">grouped layer control plugin</a></li>
+                    <li class="list-group-item">Bootstrap glyphicon and font-awesome markers included via <a href="https://github.com/lvoogdt/Leaflet.awesome-markers" target="_blank">Leaflet.awesome-markers</a></li>
+                    <li class="list-group-item">Bower_components folder installed via <a href="http://bower.io/" target="_blank">Bower Package Manager</a></li>
+                    <li class="list-group-item">Moment.js and Underscore.js needed for <a href="https://github.com/Eonasdan/bootstrap-datetimepicker" target="_blank">Eonasan's bootstrap-datetimepicker.</a></li>
+                    <li class="list-group-item">Collapse.js is an accordion plugin included in <a href="http://getbootstrap.com/javascript/" target="_blank">Bootstrap.js.</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div id="disclaimer" class="tab-pane fade text-danger">
+                <p>Trying out Bootstrap and mapbox.js.</p>
+                <p>Data is stub data from JSON files shown in navigation bar.</p>
+              </div>
+             <!--
+              <div id="collapse" class="tab-pane fade text-success">
+                  <div class="panel-group" id="accordion">
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                      Collapsible Group Item #1
+                                  </a>
+                              </h4>
+                          </div>
+                          <div id="collapseOne" class="panel-collapse collapse in">
+                              <div class="panel-body">
+                                  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                      Collapsible Group Item #2
+                                  </a>
+                              </h4>
+                          </div>
+                          <div id="collapseTwo" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                  Whatever street art aesthetic ugh gastropub, tote bag cliche disrupt single-origin coffee letterpress keytar bicycle rights. Selvage butcher artisan hella. Intelligentsia YOLO Wes Anderson disrupt, retro American Apparel kogi McSweeney's sriracha farm-to-table bicycle rights fixie lomo. Salvia photo booth Tumblr distillery umami Truffaut tofu, keffiyeh typewriter cliche PBR&B XOXO normcore Schlitz High Life. Freegan vinyl letterpress Austin, raw denim disrupt High Life deep v umami banh mi lo-fi. Plaid art party Banksy Cosby sweater, Brooklyn Austin ethical tousled deep v fashion axe. American Apparel occupy actually lo-fi, mumblecore tousled Brooklyn kale chips disrupt kitsch cliche.
+                              </div>
+                          </div>
+                      </div>
+                      <div class="panel panel-default">
+                          <div class="panel-heading">
+                              <h4 class="panel-title">
+                                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                                      Collapsible Group Item #3
+                                  </a>
+                              </h4>
+                          </div>
+                          <div id="collapseThree" class="panel-collapse collapse">
+                              <div class="panel-body">
+                                  Tonx trust fund church-key gluten-free, blog next level pour-over stumptown flannel you probably haven't heard of them artisan. XOXO retro tote bag sartorial, put a bird on it artisan synth gluten-free. Pinterest irony vegan iPhone, photo booth farm-to-table ennui fixie sriracha butcher kitsch +1 Etsy. Pour-over Etsy tilde craft beer. Messenger bag forage crucifix banh mi tattooed, Thundercats retro fanny pack locavore seitan ethical Neutra tousled. Raw denim Intelligentsia Etsy squid, pug Banksy small batch letterpress. Beard readymade before they sold out viral.                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              -->
+              <div id="calendarTest" class="tab-pane fade">
+                  <div class="container">
+                      <div class="row">
+                          <div class='col-sm-6'>
+                              <div class="form-group">
+                                  <p>Eonasdan bootstrap-datetimepicker: <a href="https://github.com/Eonasdan/bootstrap-datetimepicker" target="_blank">Github link</a></p>
+                                  <div class='input-group date' id='datetimepicker3'>
+                                      <input type='text' class="form-control" />
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                                  </div>
+                              </div>
+                          </div>
+
+                      </div>
+                  </div>
+              </div>
+              <div class="tab-pane fade" id="contact">
+                <form id="contact-form">
+                  <div class="well well-sm">
+                    <div class="row">
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <label for="first-name">First Name:</label>
+                          <input type="text" class="form-control" id="first-name">
+                        </div>
+                        <div class="form-group">
+                          <label for="last-name">Last Name:</label>
+                          <input type="text" class="form-control" id="last-email">
+                        </div>
+                        <div class="form-group">
+                          <label for="email">Email:</label>
+                          <input type="text" class="form-control" id="email">
+                        </div>
+                      </div>
+                      <div class="col-md-8">
+                        <label for="message">Message:</label>
+                        <textarea class="form-control" rows="8" id="message"></textarea>
+                      </div>
+                      <div class="col-md-12">
+                        <p>
+                          <button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Submit</button>
+                        </p>
+                      </div>
+                      </div>
+                    </div>
+                </form>
+              </div>
+              <div class="tab-pane fade" id="data-toggle1">
+              	<br><br>
+                  <!--
+                  <iframe width='100%' height='520' frameborder='0' src='http://jasonhoward123.cartodb.com/viz/7cf5813a-eb47-11e3-b456-0e10bcd91c2b/embed_map' allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+                   -->
+              </div>
+              <div class="tab-pane fade" id="data-toggle2">
+              	<br><br>
+                  <!--
+                  <iframe width='100%' height='520' frameborder='0' src='http://jasonhoward123.cartodb.com/viz/fe69ffc0-46b9-11e4-af04-0e853d047bba/embed_map' allowfullscreen webkitallowfullscreen mozallowfullscreen oallowfullscreen msallowfullscreen></iframe>
+                  -->
+              </div>
+               <div class="tab-pane fade" id="data-toggle3">
+                   <!--
+                   <p>Map of every oil well in the United States: <a href="http://a.tiles.mapbox.com/v3/postcarbon.map-hlvm5dq5/page.html#5/38.976/-99.536" target="_blank">Oil Shale Map</a></p>
+                    -->
+               </div>
+                <div class="tab-pane fade" id="data-toggle4">
+                    <!-- 16:9 aspect ratio -->
+                    <div class="embed-responsive embed-responsive-16by9">
+                       <!--
+                        <iframe class="embed-responsive-item" src="//www.youtube.com/embed/Dtt4F3GcCFg"></iframe>
+                       -->
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="data-toggle5">
+                    <!-- 16:9 aspect ratio -->
+                     <div class="embed-responsive embed-responsive-16by9">
+                        <!--
+                         <iframe class="embed-responsive-item" src="//www.youtube.com/embed/zf3UUFcBhxQ"></iframe>
+                        -->
+                     </div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="legendModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Map Legend</h4>
+          </div>
+          <div class="modal-body">
+              If ExpenseQuoted > 3000 = Green Lines
+              <br><br>
+              Only Green Lines are selectable
+
+              <!--
+                <img width="20" height="22" src="assets/img/CAP_Icon_dark.png">&nbsp;&nbsp;CAP Customers
+            <br><br>
+                    <span class="glyphicon glyphicon-flag"></span>&nbsp;&nbsp;New Customers
+              <br><br>
+                    <span class="glyphicon glyphicon-exclamation-sign"></span> &nbsp;&nbsp;Services Failures
+              <br><br>
+                    <span class='glyphicon glyphicon-comment'></span> &nbsp;&nbsp;Quotes Pending
+              <br><br>
+                    <span class='glyphicon glyphicon-map-marker'></span>&nbsp;&nbsp;BRRO Pins
+               -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+<!--
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Login</h4>
+          </div>
+          <div class="modal-body">
+            <form id="contact-form">
+              <fieldset>
+                <div class="form-group">
+                  <label for="name">Username:</label>
+                  <input type="text" class="form-control" id="username">
+                </div>
+                <div class="form-group">
+                  <label for="email">Password:</label>
+                  <input type="password" class="form-control" id="password">
+                </div>
+              </fieldset>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary" data-dismiss="modal">Login</button>
+          </div>
+        </div><!-- /.modal-content -->
+<!--      </div><!-- /.modal-dialog -->
+<!--    </div><!-- /.modal -->
+
+    <div class="modal fade" id="featureModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title text-primary" id="feature-title"></h4>
+          </div>
+          <div class="modal-body" id="feature-info"></div>
+          <div class="modal-footer">
+              <div class="row">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="modal fade" id="attributionModal" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">
+              Developed by Nuss Professional Services</a>
+            </h4>
+          </div>
+          <div class="modal-body">
+            <div id="attribution"></div>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="bower_components/moment/moment.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/handlebars.js/1.3.0/handlebars.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js"></script>
+    <!--  <script src="//cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>  -->
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.2/mapbox.js'></script>
+    <script src="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-markercluster/v0.4.0/leaflet.markercluster.js"></script>
+    <script src="//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.24.0/L.Control.Locate.js"></script>
+    <script src='https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-heat/v0.1.0/leaflet-heat.js'></script>
+    <script src="assets/leaflet-groupedlayercontrol/leaflet.groupedlayercontrol.js"></script>
+    <script src="assets/js/leaflet.awesome-markers.js"></script>
+    <script src="assets/js/app.js"></script>
+
+    <!-- Eonasdan bootstrap-datetimepicker: https://github.com/Eonasdan/bootstrap-datetimepicker/wiki/Installation -->
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker2').datetimepicker();
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker3').datetimepicker();
+        });
+    </script>
+
+   <script>
+       $('#bodyDiv, #scrollbox3').enscroll({
+           showOnHover: false,
+           verticalTrackClass: 'track3',
+           verticalHandleClass: 'handle3'
+       });
+   </script>
+
+
+  </body>
+</html>
